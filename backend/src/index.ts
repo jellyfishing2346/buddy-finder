@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
+import postRoutes from './routes/postRoutes';
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.get('/api/health', (req, res) => {
 });
 // All other routes are commented out for debugging
 app.use('/api/auth', authRoutes);
+app.use('/api/posts', postRoutes);
 
 // Error handling
 process.on('uncaughtException', (error) => {
