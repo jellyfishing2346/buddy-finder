@@ -239,8 +239,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👨‍💻 Author
 
 **Your Name**
-- GitHub: [@yourusername](https://github.com/jellyfishing2346)
-- LinkedIn: [Your Name](https://linkedin.com/in/faizan-khan234)
+- GitHub: [@jellyfishing2346](https://github.com/jellyfishing2346)
+- LinkedIn: [Faizan Khan](https://linkedin.com/in/faizan-khan234)
 
 ## 🙏 Acknowledgments
 
