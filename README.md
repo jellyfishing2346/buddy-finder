@@ -1,4 +1,4 @@
-# Buddy Finder - Backend API
+# Buddy Finder
 
 A full-stack application built with modern technologies. This project is to improve the social media experience and create an authenic experience for the user
 
