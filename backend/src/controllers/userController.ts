@@ -1,3 +1,42 @@
+// GET /api/users/:id/followers
+export const getFollowers = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const followers = await prisma.follow.findMany({
+      where: { followingId: id },
+      include: { follower: { select: { id: true, username: true, profilePictureUrl: true } } },
+    });
+    res.json(followers.map(f => f.follower));
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch followers' });
+  }
+};
+
+// GET /api/users/:id/following
+export const getFollowing = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const following = await prisma.follow.findMany({
+      where: { followerId: id },
+      include: { following: { select: { id: true, username: true, profilePictureUrl: true } } },
+    });
+    res.json(following.map(f => f.following));
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch following' });
+  }
+};
+
+// DELETE /api/users/:id/unfollow
+export const unfollowUser = async (req: AuthenticatedRequest, res: Response) => {
+  const { id } = req.params; // user to unfollow
+  const userId = req.user?.id;
+  if (!userId) return res.status(401).json({ error: "Not authenticated" });
+  if (id === userId) return res.status(400).json({ error: "Cannot unfollow yourself" });
+  await prisma.follow.deleteMany({
+    where: { followerId: userId, followingId: id }
+  });
+  res.json({ success: true });
+};
 // PUT /api/users/:id (update profile)
 export const updateUserProfile = async (req: AuthenticatedRequest, res: Response) => {
   const { id } = req.params;

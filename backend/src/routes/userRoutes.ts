@@ -7,15 +7,20 @@ import {
   getUserInterests,
   getMatchedUsers,
   getInterestFeed,
-  updateUserProfile
+  updateUserProfile,
+  getFollowers,
+  getFollowing
 } from '../controllers/userController';
 
 const router = express.Router();
 // Update user profile
 router.put('/:id', authenticate, updateUserProfile);
 
+
 router.post('/:id/follow', authenticate, followUser);
 router.post('/:id/unfollow', authenticate, unfollowUser);
+router.get('/:id/followers', getFollowers);
+router.get('/:id/following', getFollowing);
 
 // Interest selection
 router.post('/:id/interests', authenticate, selectInterests);

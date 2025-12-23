@@ -5,6 +5,7 @@ import { postsAPI } from '../../src/lib/api';
 import { useAuthStore } from '../../src/store/authStore';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { HashtagText } from '../../src/components/HashtagText';
 
 export default function FeedPage() {
   const router = useRouter();
@@ -191,7 +192,7 @@ function PostCard({ post, onUpdate }: { post: any; onUpdate: () => void }) {
         {post.caption && (
           <p className="mb-2">
             <span className="font-semibold text-gray-700">{post.user.username}</span>{' '}
-            <span className="text-gray-600">{post.caption}</span>
+            <span className="text-gray-600"><HashtagText text={post.caption} /></span>
           </p>
         )}
 
@@ -238,7 +239,7 @@ function CommentsSection({ postId }: { postId: string }) {
       {comments.map((comment) => (
         <div key={comment.id} className="text-sm">
           <span className="font-semibold">{comment.user.username}</span>{' '}
-          {comment.content}
+          <HashtagText text={comment.content} />
         </div>
       ))}
     </div>

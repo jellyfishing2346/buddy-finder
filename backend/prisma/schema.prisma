@@ -44,7 +44,7 @@ model Post {
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   likes     Like[]
   comments  Comment[]
-
+  postHashtags    PostHashtag[]
   @@map("posts")
 }
 
@@ -71,6 +71,7 @@ model Comment {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  commentHashtags CommentHashtag[]
 
   @@map("comments")
 }
@@ -163,4 +164,35 @@ model Message {
   sender        User        @relation(fields: [senderId], references: [id], onDelete: Cascade)
 
   @@map("messages")
+}
+
+model Hashtag {
+  id        String   @id @default(uuid())
+  tag       String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+
+  postHashtags    PostHashtag[]
+  commentHashtags CommentHashtag[]
+
+  @@map("hashtags")
+}
+
+model PostHashtag {
+  id        String   @id @default(uuid())
+  postId    String   @map("post_id")
+  hashtagId String   @map("hashtag_id")
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  hashtag   Hashtag  @relation(fields: [hashtagId], references: [id], onDelete: Cascade)
+  @@unique([postId, hashtagId])
+  @@map("post_hashtags")
+}
+
+model CommentHashtag {
+  id         String   @id @default(uuid())
+  commentId  String   @map("comment_id")
+  hashtagId  String   @map("hashtag_id")
+  comment    Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  hashtag    Hashtag  @relation(fields: [hashtagId], references: [id], onDelete: Cascade)
+  @@unique([commentId, hashtagId])
+  @@map("comment_hashtags")
 }

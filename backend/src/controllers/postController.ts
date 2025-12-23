@@ -4,6 +4,13 @@ import { AuthRequest } from '../middleware/auth';
 
 const prisma = new PrismaClient();
 
+// Utility to extract hashtags from text
+function extractHashtags(text: string): string[] {
+  if (!text) return [];
+  const matches = text.match(/#(\w+)/g);
+  return matches ? matches.map(tag => tag.slice(1).toLowerCase()) : [];
+}
+
 export const createPost = async (req: AuthRequest, res: Response) => {
   try {
     const { imageUrl, caption } = req.body;
@@ -14,6 +21,18 @@ export const createPost = async (req: AuthRequest, res: Response) => {
     const post = await prisma.post.create({
       data: { userId, imageUrl, caption },
     });
+    // Hashtag logic
+    const hashtags = extractHashtags(caption);
+    for (const tag of hashtags) {
+      const hashtag = await prisma.hashtag.upsert({
+        where: { tag },
+        update: {},
+        create: { tag },
+      });
+      await prisma.postHashtag.create({
+        data: { postId: post.id, hashtagId: hashtag.id },
+      });
+    }
     res.status(201).json(post);
   } catch (error) {
     res.status(500).json({ error: 'Failed to create post' });
@@ -96,6 +115,18 @@ export const commentOnPost = async (req: AuthRequest, res: Response) => {
     const comment = await prisma.comment.create({
       data: { userId, postId, content },
     });
+    // Hashtag logic for comments
+    const hashtags = extractHashtags(content);
+    for (const tag of hashtags) {
+      const hashtag = await prisma.hashtag.upsert({
+        where: { tag },
+        update: {},
+        create: { tag },
+      });
+      await prisma.commentHashtag.create({
+        data: { commentId: comment.id, hashtagId: hashtag.id },
+      });
+    }
     res.status(201).json(comment);
   } catch (error) {
     res.status(500).json({ error: 'Failed to comment on post' });

@@ -1,6 +1,7 @@
 
 "use client";
 import { useEffect, useState } from 'react';
+import EditProfileForm from '../../src/components/EditProfileForm';
 
 import { useParams } from 'next/navigation';
 import axios from '../../src/lib/api';
@@ -32,6 +33,7 @@ export default function ProfilePage() {
   const [isFollowing, setIsFollowing] = useState(false);
   const [counts, setCounts] = useState({ followers: 0, following: 0 });
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [editing, setEditing] = useState(false);
 
 
   // Fetch current user info (for auth)
@@ -91,21 +93,36 @@ export default function ProfilePage() {
             <button onClick={handleFollow} className="px-4 py-2 bg-blue-600 text-white rounded">Follow</button>
           )
         )}
+        {/* Edit profile button for current user */}
+        {isCurrentUser && !editing && (
+          <button onClick={() => setEditing(true)} className="ml-4 px-4 py-2 bg-green-600 text-white rounded">Edit Profile</button>
+        )}
       </div>
 
+      {/* Edit profile form */}
+      {isCurrentUser && editing && (
+        <EditProfileForm
+          user={user}
+          onSave={updated => {
+            setUser(updated);
+            setEditing(false);
+          }}
+          onCancel={() => setEditing(false)}
+        />
+      )}
 
       {/* Interest Selector for current user */}
-      {isCurrentUser && (
+      {isCurrentUser && !editing && (
         <InterestSelector userId={user.id} />
       )}
 
       {/* Match List for current user */}
-      {isCurrentUser && (
+      {isCurrentUser && !editing && (
         <MatchList userId={user.id} />
       )}
 
       {/* Interest Feed for current user */}
-      {isCurrentUser && (
+      {isCurrentUser && !editing && (
         <InterestFeed userId={user.id} />
       )}
 
