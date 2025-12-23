@@ -23,6 +23,9 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postRoutes);
 
+import userRoutes from './routes/userRoutes';
+app.use('/api/users', userRoutes);
+
 // Error handling
 process.on('uncaughtException', (error) => {
   console.error('Uncaught Exception:', error);

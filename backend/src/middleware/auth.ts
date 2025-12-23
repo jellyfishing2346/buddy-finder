@@ -3,6 +3,7 @@ import { verifyToken } from '../utils/jwt';
 
 export interface AuthRequest extends Request {
   userId?: string;
+  user?: { id: string };
 }
 
 export const authenticate = (
@@ -19,6 +20,7 @@ export const authenticate = (
 
     const decoded = verifyToken(token);
     req.userId = decoded.userId;
+    req.user = { id: decoded.userId };
     next();
   } catch (error) {
     return res.status(401).json({ error: 'Invalid token' });

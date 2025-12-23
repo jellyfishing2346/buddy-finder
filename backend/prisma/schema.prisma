@@ -23,6 +23,8 @@ model User {
   comments          Comment[]
   followers         Follow[]  @relation("UserFollowers")
   following         Follow[]  @relation("UserFollowing")
+  userInterests     UserInterest[]
+  groups            Group[] @relation("UserGroups")
   
 
   @@map("users")
@@ -81,4 +83,39 @@ model Follow {
 
   @@unique([followerId, followingId])
   @@map("follows")
+}
+
+model Interest {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+
+  userInterests UserInterest[]
+
+  @@map("interests")
+}
+
+model UserInterest {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  interestId String   @map("interest_id")
+  weight     Int      @default(1)
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  interest Interest @relation(fields: [interestId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, interestId])
+  @@map("user_interests")
+}
+
+model Group {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  members     User[] @relation("UserGroups")
+
+  @@map("groups")
 }
