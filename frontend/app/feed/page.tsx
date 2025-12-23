@@ -139,22 +139,21 @@ function PostCard({ post, onUpdate }: { post: any; onUpdate: () => void }) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow border border-gray-200">
+    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 transition-transform hover:scale-[1.01] hover:shadow-2xl duration-200">
       {/* Post Header */}
       <div className="p-4 flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-            <span className="text-white font-semibold">
+          <div className="w-10 h-10 bg-blue-200 rounded-full flex items-center justify-center shadow-inner">
+            <span className="text-blue-700 font-bold text-lg">
               {post.user.username[0].toUpperCase()}
             </span>
           </div>
-          <span className="font-semibold">{post.user.username}</span>
+          <span className="font-semibold text-gray-800">{post.user.username}</span>
         </div>
-        
         {post.userId === user?.id && (
           <button
             onClick={handleDelete}
-            className="text-red-600 hover:text-red-700 text-sm"
+            className="text-red-500 hover:text-red-700 text-xs font-semibold transition"
           >
             Delete
           </button>
@@ -165,32 +164,34 @@ function PostCard({ post, onUpdate }: { post: any; onUpdate: () => void }) {
       <img
         src={post.imageUrl}
         alt={post.caption || 'Post image'}
-        className="w-full object-cover max-h-96"
+        className="w-full object-cover aspect-video rounded-t-xl"
       />
 
       {/* Post Actions */}
       <div className="p-4">
-        <div className="flex gap-4 mb-3">
+        <div className="flex gap-6 mb-3 items-center">
           <button
             onClick={handleLike}
             disabled={isLiking}
-            className="hover:text-gray-600"
+            className="flex items-center gap-1 text-gray-500 hover:text-pink-500 transition"
           >
-              ❤️ {post._count?.likes ?? 0}
+            <span className="text-xl">❤️</span>
+            <span className="font-semibold">{post._count?.likes ?? 0}</span>
           </button>
           <button
             onClick={() => setShowComments(!showComments)}
-            className="hover:text-gray-600"
+            className="flex items-center gap-1 text-gray-500 hover:text-blue-500 transition"
           >
-              💬 {post._count?.comments ?? 0}
+            <span className="text-xl">💬</span>
+            <span className="font-semibold">{post._count?.comments ?? 0}</span>
           </button>
         </div>
 
         {/* Caption */}
         {post.caption && (
           <p className="mb-2">
-            <span className="font-semibold">{post.user.username}</span>{' '}
-            {post.caption}
+            <span className="font-semibold text-gray-700">{post.user.username}</span>{' '}
+            <span className="text-gray-600">{post.caption}</span>
           </p>
         )}
 
@@ -198,7 +199,6 @@ function PostCard({ post, onUpdate }: { post: any; onUpdate: () => void }) {
         {showComments && (
           <div className="mt-4 space-y-3">
             <CommentsSection postId={post.id} />
-            
             {/* Add Comment */}
             <form onSubmit={handleComment} className="flex gap-2">
               <input

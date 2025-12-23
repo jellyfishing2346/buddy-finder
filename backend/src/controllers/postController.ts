@@ -23,7 +23,12 @@ export const createPost = async (req: AuthRequest, res: Response) => {
 export const getAllPosts = async (_req: AuthRequest, res: Response) => {
   try {
     const posts = await prisma.post.findMany({
-      include: { user: true, likes: true, comments: true },
+      include: {
+        user: true,
+        _count: {
+          select: { likes: true, comments: true }
+        }
+      },
       orderBy: { createdAt: 'desc' },
     });
     res.json(posts);
@@ -37,7 +42,12 @@ export const getPostsByUser = async (req: AuthRequest, res: Response) => {
     const { userId } = req.params;
     const posts = await prisma.post.findMany({
       where: { userId },
-      include: { user: true, likes: true, comments: true },
+      include: {
+        user: true,
+        _count: {
+          select: { likes: true, comments: true }
+        }
+      },
       orderBy: { createdAt: 'desc' },
     });
     res.json(posts);
@@ -91,3 +101,18 @@ export const commentOnPost = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ error: 'Failed to comment on post' });
   }
 };
+
+// Fetch all comments for a specific post
+export const getCommentsByPost = async (req: Request, res: Response) => {
+  try {
+    const { postId } = req.params;
+    const comments = await prisma.comment.findMany({
+      where: { postId },
+      include: { user: true },
+      orderBy: { createdAt: 'asc' },
+    });
+    res.json(comments);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch comments' });
+  }
+}

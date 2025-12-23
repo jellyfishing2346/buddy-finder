@@ -1,5 +1,4 @@
 import express from 'express';
-import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
 import postRoutes from './routes/postRoutes';
@@ -9,7 +8,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Minimal Middleware
+import cors from 'cors';
 app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true

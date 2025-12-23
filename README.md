@@ -249,5 +249,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Thanks to the open-source community
 
 ---
-
-**Note:** This is a portfolio project and not intended for production use without additional security measures and optimizations.
