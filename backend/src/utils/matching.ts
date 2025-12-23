@@ -11,10 +11,11 @@ export async function calculateCompatibility(userAId: string, userBId: string): 
   ]);
 
   // Map interests
-  const aPrimary = new Set(userAInterests.filter(i => i.isPrimary).map(i => i.interestId));
-  const aSecondary = new Set(userAInterests.filter(i => !i.isPrimary).map(i => i.interestId));
-  const bPrimary = new Set(userBInterests.filter(i => i.isPrimary).map(i => i.interestId));
-  const bSecondary = new Set(userBInterests.filter(i => !i.isPrimary).map(i => i.interestId));
+  // Assuming weight >= 5 is primary, < 5 is secondary (adjust threshold as needed)
+  const aPrimary = new Set(userAInterests.filter(i => i.weight >= 5).map(i => i.interestId));
+  const aSecondary = new Set(userAInterests.filter(i => i.weight < 5).map(i => i.interestId));
+  const bPrimary = new Set(userBInterests.filter(i => i.weight >= 5).map(i => i.interestId));
+  const bSecondary = new Set(userBInterests.filter(i => i.weight < 5).map(i => i.interestId));
 
   // Shared interests
   let score = 0;
@@ -46,7 +47,7 @@ export async function calculateCompatibility(userAId: string, userBId: string): 
   // score += 2 if close
 
   // Mutual connections
-  const mutualConnections = await prisma.connection.count({
+  const mutualConnections = await prisma.connections.count({
     where: {
       status: 'ACCEPTED',
       requesterId: userAId,

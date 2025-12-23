@@ -1,3 +1,14 @@
+// Users API
+export const usersAPI = {
+  discover: async (): Promise<Array<User & { compatibility: number; sharedInterests: string[] }>> => {
+    const response = await api.get('/users/discover');
+    return response.data;
+  },
+  connect: async (userId: string): Promise<{ message: string }> => {
+    const response = await api.post(`/users/${userId}/connect`);
+    return response.data;
+  },
+};
 import axios from 'axios';
 import type { AuthResponse, Post, Comment } from '../types';
 

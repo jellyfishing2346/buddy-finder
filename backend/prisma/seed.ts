@@ -35,11 +35,10 @@ async function main() {
   // Create main categories
   for (const cat of interestCategories) {
     await prisma.interest.upsert({
-      where: { slug: cat.slug },
+      where: { name: cat.name },
       update: {},
       create: {
         name: cat.name,
-        slug: cat.slug,
         category: cat.category,
         description: cat.description,
         iconUrl: cat.iconUrl,
@@ -50,11 +49,10 @@ async function main() {
   // Create sub-interests
   for (const sub of subInterests) {
     await prisma.interest.upsert({
-      where: { slug: sub.slug },
+      where: { name: sub.name },
       update: {},
       create: {
         name: sub.name,
-        slug: sub.slug,
         category: sub.category,
         description: '',
         iconUrl: '',
