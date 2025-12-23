@@ -1,3 +1,34 @@
+// PUT /api/users/:id (update profile)
+export const updateUserProfile = async (req: AuthenticatedRequest, res: Response) => {
+  const { id } = req.params;
+  const userId = req.user?.id;
+  if (!userId || userId !== id) {
+    return res.status(403).json({ error: 'Unauthorized' });
+  }
+  const { fullName, bio, profilePictureUrl, email } = req.body;
+  try {
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: {
+        fullName,
+        bio,
+        profilePictureUrl,
+        email,
+      },
+    });
+    res.json({
+      id: updatedUser.id,
+      username: updatedUser.username,
+      email: updatedUser.email,
+      fullName: updatedUser.fullName,
+      bio: updatedUser.bio,
+      profilePictureUrl: updatedUser.profilePictureUrl,
+    });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
+};
 import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
 

@@ -8,6 +8,10 @@ export const usersAPI = {
     const response = await api.post(`/users/${userId}/connect`);
     return response.data;
   },
+  updateProfile: async (userId: string, data: Partial<User>): Promise<User> => {
+    const response = await api.put(`/users/${userId}`, data);
+    return response.data;
+  },
 };
 import axios from 'axios';
 import type { AuthResponse, Post, Comment } from '../types';
