@@ -1,10 +1,11 @@
 import express from 'express';
 import { createStory, getStories, deleteStory } from '../controllers/storyController';
-// import { authenticate } from '../middleware/auth'; // Uncomment if you have auth middleware
+import { authenticate } from '../middleware/auth';
 
 const router = express.Router();
 
-// router.use(authenticate); // Protect all routes if you have auth middleware
+// All story routes require authentication
+router.use(authenticate);
 
 router.post('/', createStory);
 router.get('/', getStories);

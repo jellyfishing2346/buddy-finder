@@ -9,24 +9,23 @@ import {
   getInterestFeed,
   updateUserProfile,
   getFollowers,
-  getFollowing
+  getFollowing,
+  getUserProfile
 } from '../controllers/userController';
 
 const router = express.Router();
-// Update user profile
-router.put('/:id', authenticate, updateUserProfile);
 
-
-router.post('/:id/follow', authenticate, followUser);
-router.post('/:id/unfollow', authenticate, unfollowUser);
+// Public routes (no authentication required)
+router.get('/:id', getUserProfile);
 router.get('/:id/followers', getFollowers);
 router.get('/:id/following', getFollowing);
+router.get('/:id/interests', getUserInterests);
 
-// Interest selection
+// Protected routes (authentication required)
+router.put('/:id', authenticate, updateUserProfile);
+router.post('/:id/follow', authenticate, followUser);
+router.post('/:id/unfollow', authenticate, unfollowUser);
 router.post('/:id/interests', authenticate, selectInterests);
-router.get('/:id/interests', authenticate, getUserInterests);
-
-// Matching and feed
 router.get('/:id/matches', authenticate, getMatchedUsers);
 router.get('/:id/interest-feed', authenticate, getInterestFeed);
 

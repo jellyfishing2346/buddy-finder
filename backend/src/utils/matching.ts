@@ -31,7 +31,10 @@ export async function calculateCompatibility(userAId: string, userBId: string): 
   // Related interests
   const allInterestIds = Array.from(new Set([...aPrimary, ...aSecondary, ...bPrimary, ...bSecondary]));
   const relatedMap: Record<string, string[]> = {};
-  const allInterests = await prisma.interest.findMany({ where: { id: { in: allInterestIds } } });
+  const allInterests = await prisma.interest.findMany({
+    where: { id: { in: allInterestIds } },
+    select: { id: true, relatedInterests: true }
+  });
   allInterests.forEach(i => { relatedMap[i.id] = i.relatedInterests; });
   for (const idA of aPrimary) {
     for (const idB of bPrimary) {
