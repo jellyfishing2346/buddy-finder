@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import axios from "../../src/lib/api";
+import axios from "@/src/lib/api";
 import Link from "next/link";
 
 export default function HashtagSearchPage() {

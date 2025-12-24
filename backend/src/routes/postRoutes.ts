@@ -7,7 +7,10 @@ import {
   deletePost,
   likePost,
   commentOnPost, 
-  getCommentsByPost
+  getCommentsByPost,
+  savePost,
+  unsavePost,
+  getSavedPosts
 } from '../controllers/postController';
 
 const router = express.Router();
@@ -19,5 +22,8 @@ router.delete('/:postId', authenticate, deletePost);
 router.post('/:postId/like', authenticate, likePost);
 router.post('/:postId/comment', authenticate, commentOnPost);
 router.get('/:postId/comments', getCommentsByPost);
+router.post('/:postId/save', authenticate, savePost);
+router.post('/:postId/unsave', authenticate, unsavePost);
+router.get('/saved/me', authenticate, getSavedPosts);
 
 export default router;

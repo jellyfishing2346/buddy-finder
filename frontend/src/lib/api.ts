@@ -1,20 +1,5 @@
-// Users API
-export const usersAPI = {
-  discover: async (): Promise<Array<User & { compatibility: number; sharedInterests: string[] }>> => {
-    const response = await api.get('/users/discover');
-    return response.data;
-  },
-  connect: async (userId: string): Promise<{ message: string }> => {
-    const response = await api.post(`/users/${userId}/connect`);
-    return response.data;
-  },
-  updateProfile: async (userId: string, data: Partial<User>): Promise<User> => {
-    const response = await api.put(`/users/${userId}`, data);
-    return response.data;
-  },
-};
 import axios from 'axios';
-import type { AuthResponse, Post, Comment } from '../types';
+import type { Post, Comment, User, AuthResponse } from '../types/index';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -33,6 +18,22 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+// Users API
+export const usersAPI = {
+  discover: async (): Promise<Array<User & { compatibility: number; sharedInterests: string[] }>> => {
+    const response = await api.get('/users/discover');
+    return response.data;
+  },
+  connect: async (userId: string): Promise<{ message: string }> => {
+    const response = await api.post(`/users/${userId}/connect`);
+    return response.data;
+  },
+  updateProfile: async (userId: string, data: Partial<User>): Promise<User> => {
+    const response = await api.put(`/users/${userId}`, data);
+    return response.data;
+  },
+};
 
 // Auth API
 export const authAPI = {
@@ -91,6 +92,21 @@ export const postsAPI = {
 
   getUserPosts: async (userId: string): Promise<Post[]> => {
     const response = await api.get(`/posts/user/${userId}`);
+    return response.data;
+  },
+
+  savePost: async (postId: string): Promise<{ message: string }> => {
+    const response = await api.post(`/posts/${postId}/save`);
+    return response.data;
+  },
+
+  unsavePost: async (postId: string): Promise<{ message: string }> => {
+    const response = await api.post(`/posts/${postId}/unsave`);
+    return response.data;
+  },
+
+  getSavedPosts: async (): Promise<Post[]> => {
+    const response = await api.get('/posts/saved/me');
     return response.data;
   },
 };

@@ -1,12 +1,13 @@
-'use client';
-
+"use client";
+import { MentionText } from '../../src/components/MentionText';
+"use client";
+import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { postsAPI } from '../../src/lib/api';
+import { savePost, unsavePost } from '../../src/lib/savedPosts';
 import { useAuthStore } from '../../src/store/authStore';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { HashtagText } from '../../src/components/HashtagText';
-
+import type { Post, Comment } from '../../src/types';
 export default function FeedPage() {
   const router = useRouter();
   const { user, logout, isAuthenticated } = useAuthStore();
@@ -20,14 +21,14 @@ export default function FeedPage() {
   });
 
   useEffect(() => {
-  if (!isAuthenticated) {
-    router.push('/login');
-  }
-}, [isAuthenticated, router]);
+    if (!isAuthenticated) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, router]);
 
-if (!isAuthenticated) {
-  return null;
-}
+  if (!isAuthenticated) {
+    return null;
+  }
 
   const handleLogout = () => {
     logout();
@@ -40,7 +41,6 @@ if (!isAuthenticated) {
       <nav className="bg-black border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
           <h1 className="text-2xl font-bold">Buddy Finder</h1>
-          
           <div className="flex items-center gap-4">
             <button
               onClick={() => setShowCreatePost(true)}
@@ -48,7 +48,12 @@ if (!isAuthenticated) {
             >
               Create Post
             </button>
-            
+            <button
+              onClick={() => router.push('/saved')}
+              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+            >
+              Saved Posts
+            </button>
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium">{user?.username}</span>
               <button
@@ -96,12 +101,14 @@ if (!isAuthenticated) {
   );
 }
 
-// Post Card Component
-function PostCard({ post, onUpdate }: { post: any; onUpdate: () => void }) {
+function PostCard(props: { post: Post & { savedByCurrentUser?: boolean }; onUpdate: () => void }) {
+  const { post, onUpdate } = props;
   const { user } = useAuthStore();
   const [showComments, setShowComments] = useState(false);
   const [comment, setComment] = useState('');
   const [isLiking, setIsLiking] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saved, setSaved] = useState(post.savedByCurrentUser || false);
 
   const handleLike = async () => {
     setIsLiking(true);
@@ -112,6 +119,23 @@ function PostCard({ post, onUpdate }: { post: any; onUpdate: () => void }) {
       console.error('Like error:', error);
     } finally {
       setIsLiking(false);
+    }
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      if (!saved) {
+        await savePost(post.id);
+        setSaved(true);
+      } else {
+        await unsavePost(post.id);
+        setSaved(false);
+      }
+    } catch (error) {
+      console.error('Save/Unsave error:', error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -169,6 +193,7 @@ function PostCard({ post, onUpdate }: { post: any; onUpdate: () => void }) {
       />
 
       {/* Post Actions */}
+
       <div className="p-4">
         <div className="flex gap-6 mb-3 items-center">
           <button
@@ -186,13 +211,21 @@ function PostCard({ post, onUpdate }: { post: any; onUpdate: () => void }) {
             <span className="text-xl">💬</span>
             <span className="font-semibold">{post._count?.comments ?? 0}</span>
           </button>
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className={`flex items-center gap-1 text-gray-500 hover:text-green-600 transition ${saved ? 'text-green-600' : ''}`}
+          >
+            <span className="text-xl">{saved ? '🔖' : '📑'}</span>
+            <span className="font-semibold">{saved ? 'Saved' : 'Save'}</span>
+          </button>
         </div>
 
         {/* Caption */}
         {post.caption && (
           <p className="mb-2">
-            <span className="font-semibold text-gray-700">{post.user.username}</span>{' '}
-            <span className="text-gray-600"><HashtagText text={post.caption} /></span>
+            <span className="font-semibold text-gray-700">{post.user.username}</span>
+            <span className="text-gray-600"> <MentionText text={post.caption} /> </span>
           </p>
         )}
 
@@ -230,16 +263,19 @@ function CommentsSection({ postId }: { postId: string }) {
     queryFn: () => postsAPI.getComments(postId),
   });
 
-  if (!comments || comments.length === 0) {
+  if (!comments || (Array.isArray(comments) && comments.length === 0)) {
     return <p className="text-gray-500 text-sm">No comments yet.</p>;
   }
 
+  // Type assertion to ensure comments is Comment[]
+  const commentList = comments as Comment[];
+
   return (
     <div className="space-y-2">
-      {comments.map((comment) => (
+      {commentList.map((comment) => (
         <div key={comment.id} className="text-sm">
-          <span className="font-semibold">{comment.user.username}</span>{' '}
-          <HashtagText text={comment.content} />
+          <span className="font-semibold">{comment.user.username}</span>
+          <span> <MentionText text={comment.content} /> </span>
         </div>
       ))}
     </div>

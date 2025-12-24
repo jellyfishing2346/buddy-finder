@@ -1,6 +1,6 @@
 // Buddy Finder - Matching Algorithm
 // Calculates compatibility score between two users based on shared interests, connections, and activity
-import { PrismaClient, ProficiencyLevel } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export async function calculateCompatibility(userAId: string, userBId: string): Promise<number> {

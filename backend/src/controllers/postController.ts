@@ -11,6 +11,13 @@ function extractHashtags(text: string): string[] {
   return matches ? matches.map(tag => tag.slice(1).toLowerCase()) : [];
 }
 
+// Utility to extract tagged usernames from text
+function extractTaggedUsernames(text: string): string[] {
+  if (!text) return [];
+  const matches = text.match(/@(\w+)/g);
+  return matches ? matches.map(tag => tag.slice(1).toLowerCase()) : [];
+}
+
 export const createPost = async (req: AuthRequest, res: Response) => {
   try {
     const { imageUrl, caption } = req.body;
@@ -32,6 +39,15 @@ export const createPost = async (req: AuthRequest, res: Response) => {
       await prisma.postHashtag.create({
         data: { postId: post.id, hashtagId: hashtag.id },
       });
+    }
+    // User tagging logic
+    const taggedUsernames = extractTaggedUsernames(caption);
+    if (taggedUsernames.length > 0) {
+      const taggedUsers = await prisma.user.findMany({ where: { username: { in: taggedUsernames } } });
+      for (const taggedUser of taggedUsers) {
+        await prisma.postTag.create({ data: { postId: post.id, userId: taggedUser.id } });
+        // TODO: Optionally, trigger notification for taggedUser.id
+      }
     }
     res.status(201).json(post);
   } catch (error) {
@@ -127,6 +143,15 @@ export const commentOnPost = async (req: AuthRequest, res: Response) => {
         data: { commentId: comment.id, hashtagId: hashtag.id },
       });
     }
+    // User tagging logic for comments
+    const taggedUsernames = extractTaggedUsernames(content);
+    if (taggedUsernames.length > 0) {
+      const taggedUsers = await prisma.user.findMany({ where: { username: { in: taggedUsernames } } });
+      for (const taggedUser of taggedUsers) {
+        await prisma.commentTag.create({ data: { commentId: comment.id, userId: taggedUser.id } });
+        // TODO: Optionally, trigger notification for taggedUser.id
+      }
+    }
     res.status(201).json(comment);
   } catch (error) {
     res.status(500).json({ error: 'Failed to comment on post' });
@@ -146,4 +171,48 @@ export const getCommentsByPost = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch comments' });
   }
-}
+};
+
+export const savePost = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.userId;
+    const { postId } = req.params;
+    if (!userId || !postId) return res.status(400).json({ error: 'Missing fields' });
+    await prisma.savedPost.upsert({
+      where: { userId_postId: { userId, postId } },
+      update: {},
+      create: { userId, postId },
+    });
+    res.json({ message: 'Post saved' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to save post' });
+  }
+};
+
+export const unsavePost = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.userId;
+    const { postId } = req.params;
+    if (!userId || !postId) return res.status(400).json({ error: 'Missing fields' });
+    await prisma.savedPost.delete({ where: { userId_postId: { userId, postId } } });
+    res.json({ message: 'Post unsaved' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to unsave post' });
+  }
+};
+
+export const getSavedPosts = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.userId;
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+    const saved = await prisma.savedPost.findMany({
+      where: { userId },
+      include: { post: { include: { user: true, _count: { select: { likes: true, comments: true } } } } },
+      orderBy: { createdAt: 'desc' },
+    });
+    const posts = saved.map(s => s.post);
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch saved posts' });
+  }
+};

@@ -1,8 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import axios from "../../src/lib/api";
-import { HashtagText } from "../../src/components/HashtagText";
+import axios from "@/src/lib/api";
+import { HashtagText } from "../../../../src/components/HashtagText";
 
 export default function HashtagExplorePage({ params }: { params: { tag: string } }) {
   const router = useRouter();

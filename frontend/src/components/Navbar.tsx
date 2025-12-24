@@ -13,6 +13,7 @@ export default function Navbar() {
         <Link href="/feed" className="hover:text-blue-600 transition-colors">Feed</Link>
         <Link href="/discover" className="hover:text-blue-600 transition-colors">Discover</Link>
         <Link href="/interests" className="hover:text-blue-600 transition-colors">Interests</Link>
+        <Link href="/explore/hashtags" className="hover:text-blue-600 transition-colors">Hashtags</Link>
         {user ? (
           <Link href={`/profile/${user.username}`} className="hover:text-blue-600 transition-colors flex items-center gap-2">
             <span className="inline-block w-8 h-8 rounded-full bg-gray-200 overflow-hidden border border-gray-300">
