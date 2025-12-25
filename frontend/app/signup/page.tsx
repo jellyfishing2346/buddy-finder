@@ -40,25 +40,21 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h1 className="text-center text-4xl font-bold text-gray-900">Buddy Finder</h1>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
-          </h2>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none' }}>
+      <div style={{ width: '100%', maxWidth: 410, background: 'rgba(24,24,28,0.82)', boxShadow: '0 8px 32px rgba(99,102,241,0.13)', borderRadius: '1.5rem', padding: '2.5rem 2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2.2rem' }}>
+        <div style={{ width: '100%', textAlign: 'center' }}>
+          <h1 style={{ fontSize: '2.3rem', fontWeight: 700, marginBottom: '0.5em', textAlign: 'center', color: 'var(--foreground-inverted)' }}>Buddy Finder</h1>
+          <h2 style={{ fontSize: '1.3rem', fontWeight: 500, marginBottom: '1.5em', textAlign: 'center', color: 'var(--foreground-secondary)' }}>Create your account</h2>
         </div>
-        
-        <form className="mt-8 space-y-6" onSubmit={handleSignup}>
+        <form onSubmit={handleSignup} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.7rem' }}>
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded">
+            <div style={{ background: 'var(--color-accent-50, #fff1f2)', border: '1px solid var(--color-accent-200, #fecdd3)', color: 'var(--color-accent-700, #be123c)', padding: '0.75em 1em', borderRadius: '8px', marginBottom: '1em', textAlign: 'center', width: '100%' }}>
               {error}
             </div>
           )}
-          
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="username" className="sr-only">Username</label>
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <label htmlFor="username" style={{ fontWeight: 600, marginBottom: '0.2em', textAlign: 'left', fontSize: '1.08rem', color: 'var(--foreground-inverted)' }}>Username</label>
               <input
                 id="username"
                 name="username"
@@ -66,26 +62,24 @@ export default function SignupPage() {
                 required
                 value={formData.username}
                 onChange={handleChange}
-                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Username"
+                style={{ maxWidth: 320, width: '100%', background: 'rgba(255,255,255,0.09)', border: '1.5px solid var(--color-primary-400)', color: 'var(--foreground-inverted)', fontSize: '1.04rem', fontWeight: 500, letterSpacing: '0.01em' }}
               />
             </div>
-
-            <div>
-              <label htmlFor="fullName" className="sr-only">Full Name</label>
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <label htmlFor="fullName" style={{ fontWeight: 600, marginBottom: '0.2em', textAlign: 'left', fontSize: '1.08rem', color: 'var(--foreground-inverted)' }}>Full Name</label>
               <input
                 id="fullName"
                 name="fullName"
                 type="text"
                 value={formData.fullName}
                 onChange={handleChange}
-                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Full Name (optional)"
+                style={{ maxWidth: 320, width: '100%', background: 'rgba(255,255,255,0.09)', border: '1.5px solid var(--color-primary-400)', color: 'var(--foreground-inverted)', fontSize: '1.04rem', fontWeight: 500, letterSpacing: '0.01em' }}
               />
             </div>
-            
-            <div>
-              <label htmlFor="email" className="sr-only">Email</label>
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <label htmlFor="email" style={{ fontWeight: 600, marginBottom: '0.2em', textAlign: 'left', fontSize: '1.08rem', color: 'var(--foreground-inverted)' }}>Email</label>
               <input
                 id="email"
                 name="email"
@@ -93,13 +87,12 @@ export default function SignupPage() {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Email address"
+                style={{ maxWidth: 320, width: '100%', background: 'rgba(255,255,255,0.09)', border: '1.5px solid var(--color-primary-400)', color: 'var(--foreground-inverted)', fontSize: '1.04rem', fontWeight: 500, letterSpacing: '0.01em' }}
               />
             </div>
-            
-            <div>
-              <label htmlFor="password" className="sr-only">Password</label>
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <label htmlFor="password" style={{ fontWeight: 600, marginBottom: '0.2em', textAlign: 'left', fontSize: '1.08rem', color: 'var(--foreground-inverted)' }}>Password</label>
               <input
                 id="password"
                 name="password"
@@ -107,27 +100,24 @@ export default function SignupPage() {
                 required
                 value={formData.password}
                 onChange={handleChange}
-                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Password"
+                style={{ maxWidth: 320, width: '100%', background: 'rgba(255,255,255,0.09)', border: '1.5px solid var(--color-primary-400)', color: 'var(--foreground-inverted)', fontSize: '1.04rem', fontWeight: 500, letterSpacing: '0.01em' }}
               />
             </div>
           </div>
-
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+            className="btn"
+            style={{ width: 210, alignSelf: 'center', marginTop: '0.7em', marginBottom: '0.7em', fontSize: '1.08rem' }}
           >
             {loading ? 'Creating account...' : 'Sign up'}
           </button>
-
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
+          <div style={{ textAlign: 'center', width: '100%' }}>
+            <span style={{ color: 'var(--foreground-secondary)', fontSize: '1.01em' }}>
               Already have an account?{' '}
-              <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500">
-                Log in
-              </Link>
-            </p>
+              <Link href="/login" style={{ color: 'var(--color-primary-400)', fontWeight: 600 }}>Log in</Link>
+            </span>
           </div>
         </form>
       </div>
